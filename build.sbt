@@ -8,6 +8,6 @@ lazy val root = (project in file(".")).
       version      := "0.1.0-SNAPSHOT"
     )),
     name := "Hello",
-    libraryDependencies += scalaTest % Test
+    libraryDependencies += scalaTest % Test,
     libraryDependencies += "io.spray" %%  "spray-json" % "1.3.3"
   )
