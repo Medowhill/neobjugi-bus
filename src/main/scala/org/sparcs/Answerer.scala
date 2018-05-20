@@ -25,21 +25,22 @@ class Answerer(file: String) {
         if (bus.days.contains(day)) {
           def answerStop(stop: Stop): Option[String] = {
             if (stop.keys.exists(m.contains(_))) {
-              val result = List((stop.arrival, ARRIVAL_STRING), (stop.departure, DEPARTURE_STRING)).flatMap {
-                case (Some(d), res) => {
-                  val times = bus.times.map(_ + d).filter(Time(hour, min) < _)
+              val result = List((stop.arrival, ARRIVAL_STRING), (stop.departure, DEPARTURE_STRING))
+                .flatMap(p => p._1.flatMap(d => {
+                  val times = bus.times.map(_ + d).filter(
+                    Time(hour, min) < _
+                  )
                   if (times.isEmpty)
                     if (bus.errTime) Some(String.format(ERR_TIME_STRING, addJosa(bus.name), stop.name)) else None
                   else
                     Some(String.format(
-                      res,
+                      p._2,
                       addJosa(bus.name),
-                      times.take(3).mkString(", ") + (if (times.size > 3) OMITTING_STRING else ""),
+                      times.take(3).mkString(", ") +
+                        (if (times.size > 3) OMITTING_STRING else ""),
                       stop.name
                     ))
-                }
-                case (None, _) => None
-              }
+                }))
               if (result.isEmpty) None else Some(result.mkString("\n"))
             } else None
           }
